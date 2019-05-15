@@ -27,6 +27,8 @@ Security Note: please remove any API keys before checking-in yaml.
 4) I set the DD_LOGS_ENABLED and DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL variable to true in your env section.  This can be
  found [here](https://docs.datadoghq.com/agent/kubernetes/daemonset_setup/?tab=dockersocket#log-collection).
  
+ The volume type is [hostPath](https://kubernetes.io/docs/concepts/storage/volumes/#hostpath).
+ 
 5) Mount the Docker socket or /var/log/pods to collect logs.  I commented out the docker socket lines.
 
 6) I mounted the pointdir volume in volumeMounts which is used to store a file with a pointer to all the containers that the Agent is collecting logs from. This is to make sure none are lost when the Agent is restarted, or in the case of a network issue.
@@ -44,7 +46,8 @@ In addition to adding the following JVM argument when starting your application 
 
 `-javaagent:/path/to/the/dd-java-agent.jar`
 
-the following system properties or environment variables need to be set:
+the following system properties or environment variables need to be set (NOTE: this assumes we will be tracing PAS as we did
+with the non-OpenShift environment):
 
 -Ddd.trace.analytics.enabled=true   
 -Ddd.jmxfetch.enabled=true  
